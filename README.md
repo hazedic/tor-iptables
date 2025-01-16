@@ -7,6 +7,7 @@
 $ cd ~
 $ git clone https://github.com/hazedic/tor-iptables.git
 $ cd tor-iptables
+$ chmod +x setup-tor.sh
 $ sudo ./setup-tor.sh
 $ sudo python tor-iptables.py -s
 ```
