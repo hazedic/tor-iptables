@@ -59,7 +59,6 @@ class TorIptablesManager:
         self.run_command(["iptables", "-A", "OUTPUT", "-j", "REJECT"])
         print("[+] iptables rules set up.")
 
-
     def restart_tor(self):
         print("[*] Restarting Tor service...")
         self.run_command(["service", "tor", "restart"])
@@ -86,10 +85,14 @@ class TorIptablesManager:
             "VirtualAddrNetworkIPv4 10.192.0.0/10\n"
         )
 
-        with open(torrc_path, "w") as torrc_file:
-            torrc_file.write(existing_content + new_settings)
-
-        print(f"[+] Appended new settings to torrc file at {torrc_path}")
+        if "DNSPort" in existing_content or "TransPort" in existing_content:
+            print("[*] Existing torrc already contains necessary settings. Skipping duplicate entries.")
+            with open(torrc_path, "w") as torrc_file:
+                torrc_file.write(existing_content)
+        else:
+            with open(torrc_path, "w") as torrc_file:
+                torrc_file.write(existing_content + new_settings)
+            print(f"[+] Appended new settings to torrc file at {torrc_path}")
 
 def check_root():
     if os.geteuid() != 0:
